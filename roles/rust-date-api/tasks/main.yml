@@ -1,7 +1,7 @@
 ---
     - name: Build Rust Date API application
-      shell: docker build -t rust-date-api:1.0 .
+      shell: docker build -t rust-date-api:latest .
     - name: Run docker container on target
-      shell: docker run -d -p 8000:8000 --restart always -t rust-date-api:1.0
+      shell: docker run -d -p 80:8000 --restart always -t rust-date-api:latest
       args:
         executable: /bin/bash

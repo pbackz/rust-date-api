@@ -4,7 +4,7 @@ A simple project about usage of Rocket to return a dateTime. Packaged with docke
 == Requirements : 
 
 - Need an Ansible client
-- OS Support for ansible deploy -> RedHat 7 / Debian 10
+- OS Support for ansible deployment -> RedHat 7 / Debian 10
 
 == Deploy
 

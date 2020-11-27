@@ -1,0 +1,51 @@
+---
+# RHEL Systems (major_version >= 7)
+    - name: sort out the yum repos
+      yum:
+        name: ['epel-release','yum-utils']
+        state: "latest"
+      when: ansible_os_family == "RedHat"
+    - name: add the docker ce yum repo
+      yum_repository:
+        name: "docker-ce"
+        description: "Docker CE YUM repo"
+        gpgcheck: "yes"
+        enabled: "yes"
+        baseurl: "https://download.docker.com/linux/centos/7/x86_64/stable"
+        gpgkey: "https://download.docker.com/linux/centos/gpg"
+      when: ansible_os_family == "RedHat"
+    - name: install the prerequisites using yum
+      dnf:
+        name: "https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm"
+      when: ansible_os_family == "Redhat"
+    - name: sort out the yum repos
+      yum:
+        name: docker-ce
+        state: "latest"
+      when: ansible_os_family == "RedHat"
+    # Debian Systems (Buster)
+    - name: Install aptitude using apt
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: yes
+        force_apt_get: yes
+      when: ansible_os_family == "Debian"
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      when: ansible_os_family == "Debian"
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+      when: ansible_os_family == "Debian"
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/debian buster stable
+        state: present
+        mode: 0666
+      when: ansible_os_family == "Debian"
+    - name: Update apt and install docker
+      apt: name=docker-ce state=latest
+      when: ansible_os_family == "Debian"

@@ -25,11 +25,10 @@ To deploy all components(docker + app) in a remote machine, the command is the s
 ----
 toto@_:/opt/rust-date-api$ ansible-playbook -i hosts deploy_all_roles.yml
 
-pbackz@vps-e8bbb354:/opt/rust-date-api$ ansible-playbook -i hosts deploy_all_roles.yml
+toto@_:/opt/rust-date-api$ ansible-playbook -i hosts deploy_all_roles.yml
 
 PLAY [Deploy all roles] *************************************************************************************************************************************************************
-TASK [Gathering Facts] **************************************************************************************************************************************************************[WARNING]: Platform linux on host localhost is using the discovered Python interpreter at /usr/bin/python, but future installation of another Python interpreter could change this.
-See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+TASK [Gathering Facts] **************************************************************************************************************************************************************
 ok: [localhost]
 
 TASK [sort out the yum repos] *******************************************************************************************************************************************************skipping: [localhost]

@@ -1,7 +1,7 @@
 FROM rust:latest as builder
 
 RUN USER=root cargo new --bin rust-date-api
-WORKDIR ./rust-api-date
+WORKDIR ./rust-date-api
 COPY ./Cargo.toml ./Cargo.toml
 RUN rustup toolchain install nightly
 RUN rustup override set nightly

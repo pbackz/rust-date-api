@@ -4,7 +4,7 @@ A simple project about usage of Rocket to return a dateTime. Packaged with docke
 == Requirements : 
 
 - Need an Ansible client
-- OS Support for ansible deploy::RedHat 7 / Debian 10
+- OS Support for ansible deployment -> RedHat 7 / Debian 10
 
 == Deploy
 
@@ -15,3 +15,74 @@ To deploy all components(docker + app) in a local machine :
 ansible-playbook -i hosts deploy_all_roles.yml
 
 ----
+
+To deploy all components(docker + app) in a remote machine, the command is the same but the **hosts** file must be modify.
+
+
+== Tests (here on  Debian system):
+
+[source,bash]
+----
+toto@_:/opt/rust-date-api$ ansible-playbook -i hosts deploy_all_roles.yml
+
+pbackz@vps-e8bbb354:/opt/rust-date-api$ ansible-playbook -i hosts deploy_all_roles.yml
+
+PLAY [Deploy all roles] *************************************************************************************************************************************************************
+TASK [Gathering Facts] **************************************************************************************************************************************************************[WARNING]: Platform linux on host localhost is using the discovered Python interpreter at /usr/bin/python, but future installation of another Python interpreter could change this.
+See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [sort out the yum repos] *******************************************************************************************************************************************************skipping: [localhost]
+
+TASK [add the docker ce yum repo] ***************************************************************************************************************************************************skipping: [localhost]
+
+TASK [install the prerequisites using yum] ******************************************************************************************************************************************skipping: [localhost]
+
+TASK [sort out the yum repos] *******************************************************************************************************************************************************skipping: [localhost]
+
+TASK [Install aptitude using apt] ***************************************************************************************************************************************************ok: [localhost]
+
+TASK [Install required system packages] *********************************************************************************************************************************************ok: [localhost] => (item=apt-transport-https)
+ok: [localhost] => (item=ca-certificates)
+ok: [localhost] => (item=curl)
+ok: [localhost] => (item=software-properties-common)
+ok: [localhost] => (item=python3-pip)
+ok: [localhost] => (item=virtualenv)
+ok: [localhost] => (item=python3-setuptools)
+
+TASK [Add Docker GPG apt Key] *******************************************************************************************************************************************************ok: [localhost]
+
+TASK [Add Docker Repository] ********************************************************************************************************************************************************ok: [localhost]
+
+TASK [Update apt and install docker] ************************************************************************************************************************************************ok: [localhost]
+
+TASK [Build Rust Date API application] **********************************************************************************************************************************************changed: [localhost]
+
+TASK [Run docker container on target] ***********************************************************************************************************************************************changed: [localhost]
+
+PLAY RECAP **************************************************************************************************************************************************************************localhost                  : ok=8    changed=2    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0
+
+
+# Check container status and verify port binding 
+
+toto@_:/opt/rust-date-api$ docker ps
+CONTAINER ID        IMAGE                  COMMAND             CREATED              STATUS              PORTS                          NAMES
+bea7a1825cc7        rust-date-api:latest   "./rust-date-api"   About a minute ago   Up About a minute   80/tcp, 0.0.0.0:80->8000/tcp   vigilant_solomon
+
+toto@_:/opt/rust-date-api$ netstat -tlnp
+Connexions Internet actives (seulement serveurs)
+Proto Recv-Q Send-Q Adresse locale          Adresse distante        Etat        PID/Program name
+tcp        0      0 0.0.0.0:902             0.0.0.0:*               LISTEN      28668/vmware-authdl
+tcp        0      0 0.0.0.0:2022            0.0.0.0:*               LISTEN      416/sshd
+tcp6       0      0 :::902                  :::*                    LISTEN      28668/vmware-authdl
+tcp6       0      0 :::2022                 :::*                    LISTEN      416/sshd
+tcp6       0      0 :::80                   :::*                    LISTEN      30923/docker-proxy
+
+# Join API
+
+toto@_:opt/rust-date-api$ curl -X GET http://localhost/now
+{ "DateTime": "Fri Nov 27 16:43:19 2020" }
+
+----
+
+
